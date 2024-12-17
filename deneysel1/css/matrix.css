@@ -1,0 +1,84 @@
+.matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: -1;
+}
+
+canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* Game content styles */
+.game-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    color: #0F0;
+}
+
+h1, #count, button {
+    color: #0F0;
+    text-shadow: 0 0 5px #0F0;
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.95) !important;
+    border: 1px solid #0F0 !important;
+    color: #0F0 !important;
+}
+
+.shop-item {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border: 1px solid #0F0 !important;
+    color: #0F0 !important;
+}
+
+button {
+    background: rgba(0, 40, 0, 0.8) !important;
+    border: 1px solid #0F0 !important;
+    color: #0F0 !important;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: rgba(0, 60, 0, 0.8) !important;
+    box-shadow: 0 0 10px #0F0;
+}
+
+#prestige-stars {
+    font-size: 24px;
+    color: gold;
+    text-shadow: 0 0 5px goldenrod;
+    margin: 10px 0;
+}
+
+#resetModal .modal-content {
+    text-align: center;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+#confirmReset {
+    background: rgba(0, 60, 0, 0.8) !important;
+}
+
+#cancelReset {
+    background: rgba(60, 0, 0, 0.8) !important;
+}

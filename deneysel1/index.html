@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coder Clicker - Become a Tech Legend</title>
+<link rel="stylesheet" href="css/matrix.css">
+</head>
+<body>
+
+<div class="game-content">
+    <h1>Coder Clicker</h1>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/1688/1688400.png" id="cookie" alt="Code Icon" />
+
+    <div id="prestige-stars">
+        <span id="starsCount">★ 0</span>
+    </div>
+
+    <div id="count">Lines of Code: 0</div>
+
+    <button id="openShopBtn">Hire Developers</button>
+
+    <div id="ownedUpgrades">
+        <h2>Your Team</h2>
+        <p>Junior Devs: <span id="cursorCount">0</span></p>
+        <p>Senior Devs: <span id="grandmaCount">0</span></p>
+        <p>Tech Leads: <span id="ovenCount">0</span></p>
+        <p>AI Engineers: <span id="factoryCount">0</span></p>
+    </div>
+
+    <!-- The Modal -->
+    <div id="shopModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Hire Developers</h2>
+        <div class="shop-item">
+            <h3>Junior Developer</h3>
+            <p>Lines per second: 1</p>
+            <p>Cost: <span id="cursorCost">15</span> lines</p>
+            <button id="buyCursorBtn">Hire Junior</button>
+        </div>
+        <div class="shop-item">
+            <h3>Senior Developer</h3>
+            <p>Lines per second: 5</p>
+            <p>Cost: <span id="grandmaCost">100</span> lines</p>
+            <button id="buyGrandmaBtn">Hire Senior</button>
+        </div>
+        <div class="shop-item">
+            <h3>Tech Lead</h3>
+            <p>Lines per second: 10</p>
+            <p>Cost: <span id="ovenCost">500</span> lines</p>
+            <button id="buyOvenBtn">Hire Tech Lead</button>
+        </div>
+        <div class="shop-item">
+            <h3>AI Engineer</h3>
+            <p>Lines per second: 50</p>
+            <p>Cost: <span id="factoryCost">2000</span> lines</p>
+            <button id="buyFactoryBtn">Hire AI Engineer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Modal -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <h2>Create a New Business?</h2>
+            <p>You've reached 100,000 lines of code! Would you like to start a new business?</p>
+            <p>You'll earn a prestige star and start over with bonuses!</p>
+            <div class="modal-buttons">
+                <button id="confirmReset">Yes, Start New</button>
+                <button id="cancelReset">Keep Coding</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial variables
+        let cookies = 0;
+
+        // Upgrade counts
+        let cursors = 0;
+        let grandmas = 0;
+        let ovens = 0;
+        let factories = 0;
+
+        // Costs
+        let cursorCost = 15;
+        let grandmaCost = 100;
+        let ovenCost = 500;
+        let factoryCost = 2000;
+
+        // Lines per second values for each upgrade
+        const cursorCPS = 1;
+        const grandmaCPS = 5;
+        const ovenCPS = 10;
+        const factoryCPS = 50;
+
+        // Cached elements
+        const cookieImg = document.getElementById('cookie');
+        const countDisplay = document.getElementById('count');
+        const openShopBtn = document.getElementById('openShopBtn');
+        const shopModal = document.getElementById('shopModal');
+        const closeModal = document.getElementsByClassName('close')[0];
+        const cursorCountDisplay = document.getElementById('cursorCount');
+        const grandmaCountDisplay = document.getElementById('grandmaCount');
+        const ovenCountDisplay = document.getElementById('ovenCount');
+        const factoryCountDisplay = document.getElementById('factoryCount');
+
+        const buyCursorBtn = document.getElementById('buyCursorBtn');
+        const buyGrandmaBtn = document.getElementById('buyGrandmaBtn');
+        const buyOvenBtn = document.getElementById('buyOvenBtn');
+        const buyFactoryBtn = document.getElementById('buyFactoryBtn');
+
+        const cursorCostDisplay = document.getElementById('cursorCost');
+        const grandmaCostDisplay = document.getElementById('grandmaCost');
+        const ovenCostDisplay = document.getElementById('ovenCost');
+        const factoryCostDisplay = document.getElementById('factoryCost');
+
+        // Update cost displays
+        cursorCostDisplay.innerText = cursorCost;
+        grandmaCostDisplay.innerText = grandmaCost;
+        ovenCostDisplay.innerText = ovenCost;
+        factoryCostDisplay.innerText = factoryCost;
+
+        // Click code icon
+        cookieImg.addEventListener('click', () => {
+            cookies++;
+            updateCountDisplay();
+        });
+
+        // Open shop
+        openShopBtn.addEventListener('click', () => {
+            shopModal.style.display = 'block';
+        });
+
+        // Close shop
+        closeModal.onclick = function() {
+            shopModal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == shopModal) {
+                shopModal.style.display = 'none';
+            }
+        }
+
+        // Buy Cursor
+        buyCursorBtn.addEventListener('click', () => {
+            if (cookies >= cursorCost) {
+                cookies -= cursorCost;
+                cursors++;
+                updateCountDisplay();
+                cursorCountDisplay.innerText = cursors;
+                // Optionally increase cost after each purchase
+                cursorCost = Math.floor(cursorCost * 1.15);
+                cursorCostDisplay.innerText = cursorCost;
+            }
+        });
+
+        // Buy Grandma
+        buyGrandmaBtn.addEventListener('click', () => {
+            if (cookies >= grandmaCost) {
+                cookies -= grandmaCost;
+                grandmas++;
+                updateCountDisplay();
+                grandmaCountDisplay.innerText = grandmas;
+                grandmaCost = Math.floor(grandmaCost * 1.15);
+                grandmaCostDisplay.innerText = grandmaCost;
+            }
+        });
+
+        // Buy Oven
+        buyOvenBtn.addEventListener('click', () => {
+            if (cookies >= ovenCost) {
+                cookies -= ovenCost;
+                ovens++;
+                updateCountDisplay();
+                ovenCountDisplay.innerText = ovens;
+                ovenCost = Math.floor(ovenCost * 1.15);
+                ovenCostDisplay.innerText = ovenCost;
+            }
+        });
+
+        // Buy Factory
+        buyFactoryBtn.addEventListener('click', () => {
+            if (cookies >= factoryCost) {
+                cookies -= factoryCost;
+                factories++;
+                updateCountDisplay();
+                factoryCountDisplay.innerText = factories;
+                factoryCost = Math.floor(factoryCost * 1.15);
+                factoryCostDisplay.innerText = factoryCost;
+            }
+        });
+
+        // Update cookie count display
+        function updateCountDisplay() {
+            countDisplay.innerText = `Lines of Code: ${cookies}`;
+        }
+
+        let prestigeStars = 0;
+        const resetModal = document.getElementById('resetModal');
+        const confirmResetBtn = document.getElementById('confirmReset');
+        const cancelResetBtn = document.getElementById('cancelReset');
+        const starsDisplay = document.getElementById('starsCount');
+
+        // Check for reset condition in the production loop
+        setInterval(() => {
+            let totalCPS = (cursors * cursorCPS) + (grandmas * grandmaCPS) + (ovens * ovenCPS) + (factories * factoryCPS);
+            cookies += totalCPS * (1 + (prestigeStars * 0.5)); // 10% bonus per star
+            updateCountDisplay();
+            
+            // Check for reset condition
+            if (cookies >= 100000 && resetModal.style.display !== 'block') {
+                resetModal.style.display = 'block';
+            }
+        }, 1000);
+
+        // Reset confirmation
+        confirmResetBtn.addEventListener('click', () => {
+            prestigeStars++;
+            cookies = 0;
+            cursors = 0;
+            grandmas = 0;
+            ovens = 0;
+            factories = 0;
+            
+            // Reset costs to initial values
+            cursorCost = 15;
+            grandmaCost = 100;
+            ovenCost = 500;
+            factoryCost = 2000;
+            
+            // Update all displays
+            updateCountDisplay();
+            cursorCountDisplay.innerText = cursors;
+            grandmaCountDisplay.innerText = grandmas;
+            ovenCountDisplay.innerText = ovens;
+            factoryCountDisplay.innerText = factories;
+            cursorCostDisplay.innerText = cursorCost;
+            grandmaCostDisplay.innerText = grandmaCost;
+            ovenCostDisplay.innerText = ovenCost;
+            factoryCostDisplay.innerText = factoryCost;
+            starsDisplay.innerText = `★ ${prestigeStars}`;
+            
+            resetModal.style.display = 'none';
+        });
+
+        cancelResetBtn.addEventListener('click', () => {
+            resetModal.style.display = 'none';
+        });
+    </script>
+</div>
+
+<script src="js/matrix.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
