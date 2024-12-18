@@ -11,7 +11,7 @@
 <div class="game-content">
     <h1>Coder Clicker</h1>
 
-    <img src="https://cdn-icons-png.flaticon.com/512/1688/1688400.png" id="cookie" alt="Code Icon" />
+    <img src="https://cdn-icons-png.flaticon.com/512/2535/2535557.png" id="cookie" alt="Code Icon" />
 
     <div id="prestige-stars">
         <span id="starsCount">★ 0</span>
@@ -127,11 +127,28 @@
         cookieImg.addEventListener('click', () => {
             cookies++;
             updateCountDisplay();
+            
+            // Create floating number effect
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.innerText = '+1';
+            
+            // Position the effect near the cursor
+            const rect = cookieImg.getBoundingClientRect();
+            effect.style.left = `${rect.left + Math.random() * rect.width}px`;
+            effect.style.top = `${rect.top + Math.random() * rect.height}px`;
+            
+            document.body.appendChild(effect);
+            
+            // Remove the effect element after animation
+            setTimeout(() => {
+                effect.remove();
+            }, 800);
         });
 
         // Open shop
         openShopBtn.addEventListener('click', () => {
-            shopModal.style.display = 'block';
+            shopModal.style.display = 'flex';
         });
 
         // Close shop
@@ -140,8 +157,8 @@
         }
 
         window.onclick = function(event) {
-            if (event.target == shopModal) {
-                shopModal.style.display = 'none';
+            if (event.target == shopModal || event.target == resetModal) {
+                event.target.style.display = 'none';
             }
         }
 
