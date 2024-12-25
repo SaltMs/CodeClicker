@@ -3,8 +3,51 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Coder Clicker - Become a Tech Legend</title>
+<title>Coder Clicker</title>
 <link rel="stylesheet" href="css/matrix.css">
+<style>
+.click-effect {
+    position: fixed;
+    pointer-events: none;
+    animation: floatUp 0.8s ease-out;
+    width: 30px; /* Adjust size as needed */
+    height: 30px; /* Adjust size as needed */
+    z-index: 1000;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+#hardResetBtn {
+    margin-left: 10px;
+    border-color: #f00 !important;
+    color: #f00 !important;
+}
+
+#hardResetBtn:hover {
+    background: rgba(80, 0, 0, 0.8) !important;
+    box-shadow: 0 0 10px #f00;
+}
+
+#confirmHardReset {
+    border-color: #f00 !important;
+    color: #f00 !important;
+}
+
+#hardResetModal ul {
+    color: #f00;
+    margin: 20px 0;
+    padding-left: 20px;
+}
+</style>
 </head>
 <body>
 
@@ -21,12 +64,14 @@
 
     <button id="openShopBtn">Hire Developers</button>
 
+    <button id="hardResetBtn" style="background: rgba(60, 0, 0, 0.8) !important;">Hard Reset</button>
+
     <div id="ownedUpgrades">
         <h2>Your Team</h2>
         <p>Junior Devs: <span id="cursorCount">0</span></p>
         <p>Senior Devs: <span id="grandmaCount">0</span></p>
-        <p>Tech Leads: <span id="ovenCount">0</span></p>
-        <p>AI Engineers: <span id="factoryCount">0</span></p>
+        <p>AI Engineers: <span id="ovenCount">0</span></p>
+        <p>Tech Leads: <span id="factoryCount">0</span></p>
     </div>
 
     <!-- The Modal -->
@@ -47,16 +92,16 @@
             <button id="buyGrandmaBtn">Hire Senior</button>
         </div>
         <div class="shop-item">
-            <h3>Tech Lead</h3>
+            <h3>AI Engineer</h3>
             <p>Lines per second: 10</p>
             <p>Cost: <span id="ovenCost">500</span> lines</p>
-            <button id="buyOvenBtn">Hire Tech Lead</button>
+            <button id="buyOvenBtn">Hire AI Engineer</button>
         </div>
         <div class="shop-item">
-            <h3>AI Engineer</h3>
+            <h3>Tech Lead</h3>
             <p>Lines per second: 50</p>
             <p>Cost: <span id="factoryCost">2000</span> lines</p>
-            <button id="buyFactoryBtn">Hire AI Engineer</button>
+            <button id="buyFactoryBtn">Hire Tech Lead</button>
         </div>
       </div>
     </div>
@@ -70,6 +115,24 @@
             <div class="modal-buttons">
                 <button id="confirmReset">Yes, Start New</button>
                 <button id="cancelReset">Keep Coding</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this new modal for hard reset confirmation -->
+    <div id="hardResetModal" class="modal">
+        <div class="modal-content">
+            <h2>⚠️ Warning: Hard Reset</h2>
+            <p>This will completely reset your progress, including:</p>
+            <ul>
+                <li>All lines of code</li>
+                <li>All developers</li>
+                <li>All prestige stars</li>
+            </ul>
+            <p>This action cannot be undone!</p>
+            <div class="modal-buttons">
+                <button id="confirmHardReset" style="background: rgba(100, 0, 0, 0.8) !important;">Yes, Reset Everything</button>
+                <button id="cancelHardReset">Cancel</button>
             </div>
         </div>
     </div>
@@ -128,10 +191,10 @@
             cookies++;
             updateCountDisplay();
             
-            // Create floating number effect
-            const effect = document.createElement('div');
+            // Create floating image effect
+            const effect = document.createElement('img');
             effect.className = 'click-effect';
-            effect.innerText = '+1';
+            effect.src = 'resim2.webp'; // Replace with your image path
             
             // Position the effect near the cursor
             const rect = cookieImg.getBoundingClientRect();
@@ -157,7 +220,7 @@
         }
 
         window.onclick = function(event) {
-            if (event.target == shopModal || event.target == resetModal) {
+            if (event.target == shopModal || event.target == resetModal || event.target == hardResetModal) {
                 event.target.style.display = 'none';
             }
         }
@@ -222,22 +285,34 @@
         const cancelResetBtn = document.getElementById('cancelReset');
         const starsDisplay = document.getElementById('starsCount');
 
-        // Check for reset condition in the production loop
+        // Add this variable near the top with other initial variables
+        let nextResetThreshold = 100000;
+
+        // Replace the existing setInterval code
         setInterval(() => {
             let totalCPS = (cursors * cursorCPS) + (grandmas * grandmaCPS) + (ovens * ovenCPS) + (factories * factoryCPS);
-            cookies += totalCPS * (1 + (prestigeStars * 0.5)); // 10% bonus per star
+            cookies += totalCPS * (1 + (prestigeStars * 0.5)); // 50% bonus per star
             updateCountDisplay();
             
-            // Check for reset condition
-            if (cookies >= 100000 && resetModal.style.display !== 'block') {
+            // Check for reset condition only when first reaching the threshold
+            if (cookies >= nextResetThreshold && resetModal.style.display !== 'block') {
                 resetModal.style.display = 'block';
             }
         }, 1000);
 
-        // Reset confirmation
+        // Update the cancel reset button handler
+        cancelResetBtn.addEventListener('click', () => {
+            resetModal.style.display = 'none';
+            // Increase the threshold for next reset
+            nextResetThreshold *= 10;
+        });
+
+        // Update the confirm reset button handler
         confirmResetBtn.addEventListener('click', () => {
             prestigeStars++;
             cookies = 0;
+            // Reset the threshold back to initial value
+            nextResetThreshold = 100000;
             cursors = 0;
             grandmas = 0;
             ovens = 0;
@@ -264,8 +339,67 @@
             resetModal.style.display = 'none';
         });
 
-        cancelResetBtn.addEventListener('click', () => {
-            resetModal.style.display = 'none';
+        // Add this to the loadGame function
+        function loadGame() {
+            if (localStorage.getItem('cookies')) {
+                // ... existing load code ...
+                nextResetThreshold = parseInt(localStorage.getItem('nextResetThreshold')) || 100000;
+            }
+        }
+
+        // Add this to the saveGame function
+        function saveGame() {
+            // ... existing save code ...
+            localStorage.setItem('nextResetThreshold', nextResetThreshold);
+        }
+
+        // Hard Reset functionality
+        const hardResetBtn = document.getElementById('hardResetBtn');
+        const hardResetModal = document.getElementById('hardResetModal');
+        const confirmHardResetBtn = document.getElementById('confirmHardReset');
+        const cancelHardResetBtn = document.getElementById('cancelHardReset');
+
+        hardResetBtn.addEventListener('click', () => {
+            hardResetModal.style.display = 'block';
+        });
+
+        cancelHardResetBtn.addEventListener('click', () => {
+            hardResetModal.style.display = 'none';
+        });
+
+        confirmHardResetBtn.addEventListener('click', () => {
+            // Reset everything to initial values
+            cookies = 0;
+            cursors = 0;
+            grandmas = 0;
+            ovens = 0;
+            factories = 0;
+            prestigeStars = 0;
+            nextResetThreshold = 100000;
+            
+            // Reset costs to initial values
+            cursorCost = 15;
+            grandmaCost = 100;
+            ovenCost = 500;
+            factoryCost = 2000;
+            
+            // Update all displays
+            updateCountDisplay();
+            cursorCountDisplay.innerText = cursors;
+            grandmaCountDisplay.innerText = grandmas;
+            ovenCountDisplay.innerText = ovens;
+            factoryCountDisplay.innerText = factories;
+            cursorCostDisplay.innerText = cursorCost;
+            grandmaCostDisplay.innerText = grandmaCost;
+            ovenCostDisplay.innerText = ovenCost;
+            factoryCostDisplay.innerText = factoryCost;
+            starsDisplay.innerText = `★ ${prestigeStars}`;
+            
+            // Clear local storage
+            localStorage.clear();
+            
+            // Close the modal
+            hardResetModal.style.display = 'none';
         });
     </script>
 </div>
