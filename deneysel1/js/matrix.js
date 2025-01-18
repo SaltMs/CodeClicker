@@ -19,6 +19,12 @@ class MatrixRain {
         this.columns = Math.floor(window.innerWidth / this.fontSize);
         this.drops = Array(this.columns).fill(1);
 
+        // Animasyon durumu için flag ekleyelim
+        this.isAnimating = true;
+        
+        // Toggle butonu oluştur
+        this.createToggleButton();
+
         this.init();
         window.addEventListener('resize', () => this.resizeCanvas());
     }
@@ -70,7 +76,29 @@ class MatrixRain {
         }
     }
 
+    createToggleButton() {
+        const toggleButton = document.createElement('button');
+        toggleButton.innerHTML = '⏸️ Background toggle';
+        toggleButton.style.position = 'fixed';
+        toggleButton.style.bottom = '20px';
+        toggleButton.style.right = '20px';
+        toggleButton.style.zIndex = '1000';
+        toggleButton.style.padding = '10px';
+        toggleButton.style.cursor = 'pointer';
+        
+        toggleButton.addEventListener('click', () => {
+            this.isAnimating = !this.isAnimating;
+            toggleButton.innerHTML = this.isAnimating ? '⏸️ Background toggle' : '▶️ Background toggle';
+            if (this.isAnimating) {
+                this.animate();
+            }
+        });
+        
+        document.body.appendChild(toggleButton);
+    }
+
     animate() {
+        if (!this.isAnimating) return;
         this.draw();
         requestAnimationFrame(() => this.animate());
     }
